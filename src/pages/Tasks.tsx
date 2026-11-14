@@ -17,14 +17,13 @@ import {
 } from "../helpers/tasks";
 import type { MenuAction } from "../components/GoalMenu";
 import { usePeople } from "../helpers/people";
-import Avatars from "../components/Avatars";
+import WhoFilter, { type Who } from "../components/WhoFilter";
 import TaskRow from "../components/TaskRow";
 import TaskBoard from "../components/TaskBoard";
 import TaskDetails from "../components/TaskDetails";
 import "./Tasks.css";
 import { smoothly } from "../helpers/motion";
 
-type Who = "all" | Person;
 const groupOrder: TaskGroup[] = ["overdue", "today", "tomorrow", "week", "later", "someday", "done"];
 const groupHints: Partial<Record<TaskGroup, string>> = {
   overdue: "Catch up on these first",
@@ -56,7 +55,7 @@ export default function Tasks({
   onDelete: (id: string) => void;
 }>) {
   const [who, setWho] = useState<Who>("all");
-  // Board first, like the grid on Our Goals.
+  // Board first, like the grid on Goals.
   const [view, setView] = useState<"board" | "list">("board");
   const [doneOpen, setDoneOpen] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -88,15 +87,8 @@ export default function Tasks({
     return () => document.removeEventListener("keydown", onKey);
   }, [onAdd]);
 
-  // Filters: all, then each partner ("Mine" for the signed-in one), then the
-  // tasks you share ("Both of us" as the owner).
-  const { name, partner } = usePeople();
-  const people: Person[] = partner ? ["owner", "partner"] : ["owner"];
-  const whoOptions: { key: Who; label: string }[] = [
-    { key: "all", label: "All" },
-    ...people.map((p) => ({ key: p, label: p === me ? "Mine" : name(p) })),
-    { key: "Both", label: "Shared" },
-  ];
+  const { name } = usePeople();
+
   const visible = who === "all" ? tasks : tasks.filter((t) => t.owner === who);
   const openCount = (w: Who) =>
     tasks.filter((t) => !t.done && (w === "all" || t.owner === w)).length;
@@ -218,24 +210,7 @@ export default function Tasks({
       </section>
 
       <div className="goals-toolbar">
-        <div className="segmented" aria-label="Whose tasks">
-          {whoOptions.map((o) => (
-            <button
-              key={o.key}
-              type="button"
-              aria-pressed={o.key === who}
-              className={o.key === who ? "active" : ""}
-              onClick={() => smoothly(() => setWho(o.key))}
-            >
-              {o.key !== "all" && <Avatars owner={o.key} />}
-              {/* One span, so the count shares the label's line (the button
-                  centres each flex item on its own, which lifts the smaller count) */}
-              <span>
-                {o.label} <span className="seg-count">{openCount(o.key)}</span>
-              </span>
-            </button>
-          ))}
-        </div>
+        <WhoFilter value={who} onChange={setWho} me={me} label="Whose tasks" count={openCount} />
         <div className="view-toggle" aria-label="Layout">
           <button
             type="button"

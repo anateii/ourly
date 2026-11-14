@@ -177,6 +177,26 @@ export const goals = pgTable(
   ],
 );
 
+// The cards on a goal's own page (notes, checklist, chart, calendar, photos,
+// journal). `data` holds the card's content in the shape for its kind; see
+// cleanData() in api/goals.ts.
+export const goalCards = pgTable(
+  "goal_cards",
+  {
+    id: id(),
+    spaceId: spaceId(),
+    goalId: uuid("goal_id")
+      .notNull()
+      .references(() => goals.id, { onDelete: "cascade" }),
+    kind: text("kind").notNull(), // 'notes' | 'checklist' | 'chart' | 'calendar' | 'photos' | 'journal'
+    title: text("title").notNull(),
+    position: integer("position").notNull().default(0),
+    data: jsonb("data").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("goal_cards_goal_idx").on(t.goalId, t.position)],
+);
+
 // What each of you did, for Recent activity on Home. Entries keep the title
 // as it was then, so they still read right after a rename or a delete.
 export const activity = pgTable(

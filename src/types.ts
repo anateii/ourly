@@ -46,6 +46,8 @@ export interface Adventure {
 }
 export type GoalCategory = "Travel" | "Home" | "Career" | "Finance" | "Life";
 export type GoalStatus = "In progress" | "Not started" | "Completed";
+// Colours for a goal page's banner, by category, when the goal has no photo.
+export type GoalTint = "sky" | "peach" | "sage" | "plum" | "amber";
 export interface Goal {
   id: string;
   title: string;

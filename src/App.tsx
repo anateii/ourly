@@ -8,6 +8,7 @@ import SettingsDialog, { type SettingsTab, type SpaceFields } from "./components
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import Goals from "./pages/Goals";
+import GoalBoard from "./pages/GoalBoard";
 import Tasks from "./pages/Tasks";
 import Calendar from "./pages/Calendar";
 import Finances from "./pages/Finances";
@@ -67,7 +68,7 @@ import {
 } from "./helpers/tasks";
 
 // Tiny hash router: #goals, #tasks, #calendar, #finances and #space open their
-// pages; any other hash stays on Home.
+// pages; #goals/<id> opens one goal's own page; any other hash stays on Home.
 type Page = "home" | "goals" | "tasks" | "calendar" | "finances" | "space";
 const pages: Record<string, Page> = {
   "#goals": "goals",
@@ -78,7 +79,7 @@ const pages: Record<string, Page> = {
 };
 const activeLabel: Record<Page, string> = {
   home: "Home",
-  goals: "Our Goals",
+  goals: "Goals",
   tasks: "Tasks",
   calendar: "Calendar",
   finances: "Finances",
@@ -90,29 +91,33 @@ const UNDO_MS = 5000;
 // How often to check for the other partner's changes while the app is showing.
 const REFRESH_MS = 10_000;
 // Page changes animate the main area (see "Page transitions" in index.css).
+const GOAL_HASH = /^#goals\/([\w-]+)$/;
 function usePage() {
-  const read = (): Page =>
-    pages[globalThis.location.hash] ?? "home";
-  const [page, setPage] = useState(read);
-  const current = useRef(page);
+  const read = (): { page: Page; goalId: string | null } => {
+    const { hash } = globalThis.location;
+    const goalId = GOAL_HASH.exec(hash)?.[1] ?? null;
+    return { page: goalId ? "goals" : (pages[hash] ?? "home"), goalId };
+  };
+  const [route, setRoute] = useState(read);
+  const current = useRef(route);
   useEffect(() => {
     const onHash = () => {
       const next = read();
-      if (next === current.current) return;
+      if (next.page === current.current.page && next.goalId === current.current.goalId) return;
       current.current = next;
       smoothly(() => {
-        flushSync(() => setPage(next));
+        flushSync(() => setRoute(next));
         globalThis.scrollTo({ top: 0 }); // so the new page is captured from its top
       }, "page");
     };
     globalThis.addEventListener("hashchange", onHash);
     return () => globalThis.removeEventListener("hashchange", onHash);
   }, []);
-  return page;
+  return route;
 }
 
 export default function App() {
-  const page = usePage();
+  const { page, goalId } = usePage();
   const request = useApi();
 
   // Our own changes in flight. While any are, background refreshes hold off
@@ -187,7 +192,7 @@ export default function App() {
     }
     globalThis.scrollTo({ top: 0 });
     document.getElementById("page-title")?.focus();
-  }, [page]);
+  }, [page, goalId]);
 
   const { isSignedIn, userId } = useAuth();
 
@@ -769,6 +774,9 @@ export default function App() {
     });
   };
 
+  // #goals/<id>: that goal's own page. An id that isn't ours shows the list.
+  const openGoal = goalId ? goals.find((g) => g.id === goalId) : undefined;
+
   const featured = goals.find((g) => g.featured);
 
   const loading =
@@ -817,7 +825,10 @@ export default function App() {
             onInvite={createInvite}
           />
           <main id="main" className="main">
-            {page === "goals" && (
+            {page === "goals" && openGoal && (
+              <GoalBoard key={openGoal.id} goal={openGoal} notify={setToast} />
+            )}
+            {page === "goals" && !openGoal && (
               <Goals
                 goals={goals}
                 steps={steps}

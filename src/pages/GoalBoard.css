@@ -1,0 +1,710 @@
+/* A goal's own page (#goals/<id>): banner, then cards two per row.
+   Everything here is prefixed gb- ("goal board"). */
+.gb {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.gb h1,
+.gb h2,
+.gb p,
+.gb ul,
+.gb dl,
+.gb dd,
+.gb figure {
+  margin: 0;
+}
+.gb ul {
+  padding: 0;
+  list-style: none;
+}
+
+/* The page's accents use --tint (strong) and --tint-soft (fill). A banner
+   without a photo takes its category's pair; both come from the theme tokens,
+   so dark mode has its own values. */
+.gb {
+  --tint: var(--accent);
+  --tint-soft: var(--surface);
+}
+.gb-tint-sky {
+  --tint: var(--sky);
+  --tint-soft: var(--sky-soft);
+}
+.gb-tint-peach {
+  --tint: var(--peach);
+  --tint-soft: var(--peach-soft);
+}
+.gb-tint-sage {
+  --tint: var(--sage);
+  --tint-soft: var(--sage-soft);
+}
+.gb-tint-plum {
+  --tint: var(--plum);
+  --tint-soft: var(--plum-soft);
+}
+.gb-tint-amber {
+  --tint: var(--amber);
+  --tint-soft: var(--amber-soft);
+}
+
+.gb-small {
+  font-size: 13px;
+  color: var(--muted);
+}
+.gb-error {
+  font-size: 14px;
+  color: var(--danger);
+}
+
+/* Buttons and fields */
+.gb-btn {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background var(--dur) var(--ease);
+}
+.gb-btn-fill {
+  background: var(--accent);
+  color: var(--on-fill);
+}
+.gb-btn-fill:hover {
+  filter: brightness(1.08);
+}
+.gb-btn-soft {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+.gb-btn-line {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--text);
+}
+.gb-btn-line:hover {
+  background: var(--hover-soft);
+}
+.gb-btn-danger {
+  border-color: var(--line);
+  background: transparent;
+  color: var(--danger);
+}
+.gb-btn-danger:hover {
+  background: var(--danger-soft);
+}
+.gb-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--field-line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 15px;
+}
+.gb-input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.gb .icon-btn {
+  flex: none;
+  color: var(--muted);
+}
+.gb .icon-btn:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+.gb .icon-btn:disabled {
+  opacity: 0.35;
+  background: transparent;
+}
+.gb .icon-btn[aria-expanded="true"] {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+/* Banner */
+.gb-banner {
+  position: relative;
+  overflow: hidden;
+  padding: 36px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: var(--tint-soft);
+}
+.gb-ring {
+  position: absolute;
+  right: -80px;
+  top: -120px;
+  width: 320px;
+  height: 320px;
+  border: 40px solid var(--tint);
+  border-radius: 50%;
+  opacity: 0.12;
+  pointer-events: none;
+}
+/* With a photo: the picture fills the banner under a dark veil, and the text
+   is light in both themes. The veil keeps white text readable on any photo. */
+.gb-banner.has-photo {
+  min-height: 280px;
+  border-color: transparent;
+  background: #13121d;
+}
+.gb-banner-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.gb-banner.has-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(12, 11, 22, 0.82), rgba(12, 11, 22, 0.5));
+  pointer-events: none;
+}
+.gb-banner.has-photo .gb-banner-text,
+.gb-banner.has-photo .gb-banner-side {
+  z-index: 1; /* above the veil */
+}
+.gb-banner.has-photo h1 {
+  color: #ffffff;
+}
+.gb-banner.has-photo .gb-eyebrow,
+.gb-banner.has-photo .gb-lead {
+  color: rgba(255, 255, 255, 0.88);
+}
+.gb-banner-text {
+  position: relative;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.gb-eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.gb-banner h1 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(38px, 5vw, 60px);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+.gb-lead {
+  font-size: 16px;
+  color: var(--text-2);
+}
+.gb-banner-side {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.gb-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.gb-stats div {
+  min-width: 96px;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column-reverse; /* the number above its label */
+  border-radius: 16px;
+  background: var(--surface);
+}
+.gb-stats dd {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.gb-stats dt {
+  font-size: 12px;
+  color: var(--muted);
+}
+/* A card's settings strip */
+.gb-toolbar {
+  padding: 10px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  border: 1px dashed var(--dash-line);
+  border-radius: 16px;
+  background: var(--surface-sunken);
+}
+.gb-tool-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.gb-push {
+  margin-left: auto;
+}
+/* Board: "Create a card" first, then the cards, two per row */
+.gb-board {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 20px;
+}
+/* The tile (or its format list) always takes the whole first row */
+.gb-board > :first-child {
+  grid-column: 1 / -1;
+}
+.gb-cell {
+  min-width: 0;
+  scroll-margin: 24px;
+}
+.gb-card {
+  min-width: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--tint-soft);
+  transition: box-shadow var(--dur) var(--ease);
+}
+.gb-card.is-editing {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.gb-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.gb-card-head h2 {
+  flex: 1;
+  min-width: 0;
+  font-size: 17px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.gb-title-input {
+  font-size: 16px;
+  font-weight: 700;
+}
+.gb-type-icon {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--tint) 16%, transparent);
+  color: var(--tint);
+}
+
+/* Create a card */
+.gb-create {
+  width: 100%;
+  min-height: 220px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 2px dashed var(--dash-line);
+  border-radius: 22px;
+  background: transparent;
+  color: var(--accent-strong);
+  transition: background var(--dur) var(--ease);
+}
+.gb-create:hover {
+  background: var(--accent-soft);
+}
+.gb-create b {
+  font-size: 17px;
+}
+.gb-create-plus {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--accent-soft);
+}
+.gb-picker {
+  border: 2px dashed var(--accent);
+  background: var(--surface);
+}
+.gb-formats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+.gb-format {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-sunken);
+  color: var(--text);
+  text-align: left;
+  transition:
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+.gb-format:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.gb-format:disabled {
+  opacity: 0.5;
+}
+.gb-format b {
+  font-size: 14px;
+}
+.gb-format > span:last-child {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* Notes: a list of rows; each opens its note in the dialog */
+.gb-note-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.gb-note {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-right: 14px;
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  background: var(--surface);
+  transition: border-color var(--dur) var(--ease);
+}
+.gb-note:hover,
+.gb-note:focus-within {
+  border-color: var(--accent);
+}
+.gb-note-open {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: none;
+  border-radius: 14px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.gb-note-title {
+  font-size: 15px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gb-note-text {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+.gb-note .icon-btn {
+  color: var(--muted);
+}
+.note-dialog .field textarea {
+  min-height: 160px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--field-line);
+  background: var(--surface-sunken);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text);
+  resize: vertical;
+}
+.note-dialog .field textarea:focus {
+  border-color: var(--accent);
+  background: var(--surface);
+  outline: none;
+}
+
+/* Checklist */
+.gb-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.gb-meter {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--col-bg);
+  overflow: hidden;
+}
+.gb-meter span {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--sage);
+  transition: width var(--dur-glide) var(--ease);
+}
+.gb-checks li {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.gb-checks li:last-child {
+  border-bottom: none;
+}
+.gb-checks input {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  margin: 0;
+  accent-color: var(--accent);
+}
+.gb-checks label {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 0; /* a taller target than the text alone */
+  overflow-wrap: anywhere;
+}
+.gb-checks .is-done label {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+.gb-add-row {
+  display: flex;
+  gap: 8px;
+}
+
+/* Chart */
+.gb-chart-top {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.gb-chart-top b {
+  font-size: 26px;
+  font-variant-numeric: tabular-nums;
+}
+.gb-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.gb-bar-row {
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 14px;
+}
+.gb-bar-row span:first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.gb-bar-row span:last-child {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.gb-bar-edit {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.gb-amount {
+  flex: 0 0 110px;
+  font-variant-numeric: tabular-nums;
+}
+.gb-bar-track {
+  height: 12px;
+  border-radius: 6px;
+  background: var(--col-bg);
+  overflow: hidden;
+}
+.gb-bar-track div {
+  height: 100%;
+  border-radius: 6px;
+  transition: width var(--dur-glide) var(--ease);
+}
+
+/* Calendar */
+.gb-cal-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.gb-cal-head p {
+  flex: 1;
+  font-weight: 700;
+}
+.gb-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+.gb-cal-wk {
+  padding-bottom: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--muted);
+}
+.gb-cal-day {
+  min-height: 40px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.gb-cal-day:hover {
+  background: var(--hover);
+}
+.gb-cal-day.has-plan {
+  background: var(--tint);
+  color: var(--surface); /* light on the strong tint in light mode, dark on it in dark mode */
+  font-weight: 700;
+}
+.gb-events li {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid var(--line);
+}
+.gb-event-day {
+  flex: 0 0 92px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tint);
+}
+.gb-events li > span {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Photo album */
+.gb-photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+.gb-photo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+.gb-photo img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  border-radius: 16px;
+  object-fit: cover;
+  background: var(--col-bg);
+}
+.gb-photo .gb-input {
+  min-height: 44px;
+  font-size: 13px;
+}
+.gb .gb-photo-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: var(--surface);
+  color: var(--text);
+}
+.gb-photo-add {
+  aspect-ratio: 4 / 3;
+  border: 2px dashed var(--dash-line);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--accent-strong);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.gb-photo-add:hover {
+  background: var(--accent-soft);
+}
+.gb-photo-add:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.gb-photo-add.is-busy {
+  cursor: default;
+  color: var(--muted);
+}
+
+/* Journal */
+.gb-entries li {
+  padding: 12px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border-top: 1px solid var(--line);
+}
+.gb-entries li > div {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-wrap: anywhere;
+}
+.gb-entry-date {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tint);
+}

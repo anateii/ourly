@@ -22,12 +22,6 @@
   align-items: center;
   gap: 6px;
 }
-.segmented .avatar {
-  width: 22px;
-  height: 22px;
-  font-size: 10px;
-  border-width: 1.5px;
-}
 
 /* List groups */
 .task-groups {

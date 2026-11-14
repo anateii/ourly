@@ -22,11 +22,11 @@ import { joinDue, splitDue, type TaskEdits } from "../helpers/tasks";
 import { parseDay } from "../helpers/goals";
 import { usePeople } from "../helpers/people";
 import Avatars from "../components/Avatars";
+import WhoFilter, { type Who } from "../components/WhoFilter";
 import EventDialog, { type NewEvent } from "../components/EventDialog";
 import "./Calendar.css";
 import { smoothly } from "../helpers/motion";
 
-type Who = "all" | Person;
 type Layer = "events" | "tasks" | "goals" | "checkins";
 type Item =
   | { type: "event"; sort: string; event: CalendarEvent }
@@ -96,7 +96,6 @@ export default function Calendar({
   onToggleTask: (id: string) => void;
   onChangeTask: (id: string, edits: TaskEdits, message: string) => void;
 }>) {
-  const { name, partner } = usePeople();
   const today = startOfToday();
   const [cursor, setCursor] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
   const [selected, setSelected] = useState(() => keyOf(today));
@@ -163,13 +162,6 @@ export default function Calendar({
 
   const goToMonth = (d: Date) => setCursor(new Date(d.getFullYear(), d.getMonth(), 1));
 
-  const whoOptions: { key: Who; label: string }[] = [
-    { key: "all", label: "All" },
-    { key: "owner", label: me === "owner" ? "Mine" : name("owner") },
-    ...(partner ? [{ key: "partner" as Who, label: me === "partner" ? "Mine" : name("partner") }] : []),
-    { key: "Both", label: "Shared" },
-  ];
-
   return (
     <>
       <header className="page-head">
@@ -233,20 +225,7 @@ export default function Calendar({
       </div>
 
       <div className="cal-filters">
-        <div className="segmented" aria-label="Whose plans">
-          {whoOptions.map((o) => (
-            <button
-              key={o.key}
-              type="button"
-              aria-pressed={o.key === who}
-              className={o.key === who ? "active" : ""}
-              onClick={() => smoothly(() => setWho(o.key))}
-            >
-              {o.key !== "all" && <Avatars owner={o.key} />}
-              {o.label}
-            </button>
-          ))}
-        </div>
+        <WhoFilter value={who} onChange={setWho} me={me} label="Whose plans" />
         <div className="cal-layers" role="group" aria-label="What to show">
           {layerLabels.map((l) => (
             <button

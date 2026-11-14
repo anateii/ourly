@@ -64,7 +64,7 @@ export default function Goals({
       <header className="page-head">
         <div>
           <h1 id="page-title" tabIndex={-1}>
-            Our Goals
+            Goals
           </h1>
           <p>Big plans, small steps.</p>
         </div>

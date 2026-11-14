@@ -689,6 +689,23 @@
   font-weight: 600;
   box-shadow: 0 1px 3px rgba(28, 27, 46, 0.1);
 }
+/* WhoFilter: All / Mine / partner / Shared, with avatars in the tabs */
+.who-filter button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.who-filter .avatar {
+  width: 22px;
+  height: 22px;
+  font-size: 10px;
+  border-width: 1.5px;
+}
+.who-filter.mini-seg .avatar {
+  width: 18px;
+  height: 18px;
+  font-size: 9px;
+}
 .greeting {
   display: flex;
   flex-direction: column;
@@ -1987,5 +2004,50 @@
   .up-tools .mini-seg button {
     flex: 1;
     padding: 0 8px;
+  }
+}
+
+/* Skeleton loading (SkeletonCard): a card's outline with soft bars that pulse */
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.skeleton-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.bone {
+  display: block;
+  border-radius: 10px;
+  background: var(--line-soft);
+  animation: bone-pulse 1.4s ease-in-out infinite;
+}
+.bone-icon {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: 11px;
+}
+.bone-title {
+  width: 40%;
+  height: 18px;
+}
+.bone-row {
+  height: 52px;
+  border-radius: 14px;
+}
+.bone-short {
+  width: 60%;
+}
+@keyframes bone-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bone {
+    animation: none;
   }
 }

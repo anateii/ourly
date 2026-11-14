@@ -352,6 +352,8 @@ input:focus-visible {
 }
 .vt-view .goal-card,
 .vt-view .board-card,
+.vt-view .gb-card,
+.vt-view .gb-create,
 .vt-view .task,
 .vt-view .up-item {
   view-transition-name: match-element;

@@ -18,9 +18,8 @@ import type { ApiActivity } from "../helpers/activity";
 import { toPerson, type ApiMember } from "../helpers/goals";
 import { usePeople } from "../helpers/people";
 import Avatars from "./Avatars";
-import { smoothly } from "../helpers/motion";
+import WhoFilter, { type Who } from "./WhoFilter";
 
-type Who = "all" | Person;
 
 const kinds: Record<ApiActivity["kind"], { icon: LucideIcon; tone: string }> = {
   task_added: { icon: Plus, tone: "accent" },
@@ -144,12 +143,6 @@ export default function RecentActivity({
   const firstOld = visible.findIndex((a) => !isNew(a));
   const hasNew = visible.some(isNew);
 
-  const filters: { key: Who; label: string }[] = [
-    { key: "all", label: "All" },
-    { key: me, label: "You" },
-    { key: partner, label: name(partner) },
-  ];
-
   return (
     <section className="card panel activity" aria-labelledby="activity-title">
       <div className="panel-head">
@@ -166,18 +159,8 @@ export default function RecentActivity({
             "You're all caught up."
           )}
         </p>
-        <div className="mini-seg" aria-label="Whose activity">
-          {filters.map((f) => (
-            <button
-              key={f.key}
-              type="button"
-              aria-pressed={who === f.key}
-              onClick={() => smoothly(() => setWho(f.key))}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
+        {/* No "Shared": one person does each thing */}
+        <WhoFilter value={who} onChange={setWho} me={me} label="Whose activity" shared={false} compact />
       </div>
 
       {visible.length === 0 ? (

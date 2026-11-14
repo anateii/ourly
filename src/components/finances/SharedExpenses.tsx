@@ -89,7 +89,7 @@ export default function SharedExpenses({
     groups.set(row.day, [...(groups.get(row.day) ?? []), row]);
 
   const paidOptions: [string, string][] = [
-    ["all", "Everyone"],
+    ["all", "All"],
     [me, "You"],
     ...(partner ? [[other, name(other)] as [string, string]] : []),
   ];

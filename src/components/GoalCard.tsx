@@ -58,7 +58,12 @@ export default function GoalCard({
 
       <div className="goal-body">
         <div className="goal-head">
-          <h2>{goal.title}</h2>
+          <h2>
+            {/* Opens the goal's own page; the link covers the cover photo too */}
+            <a className="goal-open" href={`#goals/${goal.id}`}>
+              {goal.title}
+            </a>
+          </h2>
           <GoalMenu
             label={`More options for ${goal.title}`}
             actions={[

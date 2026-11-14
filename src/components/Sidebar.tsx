@@ -13,7 +13,7 @@ import type { SettingsTab } from "./SettingsDialog";
 // items; "secondary" ones move to the top app bar instead.
 const items = [
   { label: "Home", icon: House, href: "#home" },
-  { label: "Our Goals", icon: Heart, href: "#goals" },
+  { label: "Goals", icon: Heart, href: "#goals" },
   { label: "Tasks", icon: SquareCheck, href: "#tasks" },
   { label: "Calendar", icon: CalendarDays, href: "#calendar" },
   { label: "Finances", icon: Wallet, href: "#finances" },

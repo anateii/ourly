@@ -35,11 +35,6 @@
 .cal-filters .segmented {
   margin: 0;
 }
-.cal-filters .segmented button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
 .cal-layers {
   display: flex;
   flex-wrap: wrap;
